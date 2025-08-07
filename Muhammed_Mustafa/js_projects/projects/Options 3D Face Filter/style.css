@@ -1,0 +1,68 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #add8e6;
+  width: 100%;
+  height: 100%;
+}
+
+.container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.canvas-wrapper {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+}
+
+.output_canvas,
+.canvas2d {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1280px;
+  height: 720px;
+}
+
+.canvas2d {
+  pointer-events: none;
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  filter: FlipH;
+  -ms-filter: "FlipH";
+}
+
+.input_video {
+  display: none;
+}
+
+#filterButton {
+  position: absolute;
+  top: 30px;
+  right: 130px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: background-color 0.3s;
+  transform: none;
+}
+
+#filterButton:hover {
+  background-color: #0056b3;
+}

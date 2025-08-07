@@ -16,17 +16,11 @@ const solutionOptions = {
 };
 
 const modelConfigs = {
-  glasses: {
-    path: './models/glasses/scene.gltf',
-    scale: [1.5, 1.5, 1.5],
-    rotation: [0, -Math.PI / 2, 0],
-    position: [0, -2.5, 2],
-  },
-  mask: {
-    path: './models/mask/scene.gltf',
-    scale: [18, 18, 18],
-    rotation: [0, 0, 0],
-    position: [0, -10, 0],
+  motorcycleHelmet: {
+    path: './models/motorcycle_helmet/source/4khelmet/4khelmet.gltf',
+    scale: [55, 55, 55],
+    rotation: [0, 3.1, 0],
+    position: [0, -9, -10],
   },
 };
 
@@ -42,9 +36,10 @@ class EffectRenderer {
   model = null;
   modelConfig;
 
-  constructor(modelName = 'glasses') {
-    const config = modelConfigs[modelName];
-    this.modelConfig = config;
+  constructor(modelName = '') {
+    this.modelNames = Object.keys(modelConfigs);
+    this.currentModelIndex = this.modelNames.indexOf(modelName);
+    this.modelConfig = modelConfigs[modelName];
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xadd8e6);
 
@@ -60,14 +55,42 @@ class EffectRenderer {
     dirLight.castShadow = true;
     this.scene.add(dirLight);
 
-    const loader = new THREE.GLTFLoader();
-    loader.load(config.path, (gltf) => {
+    this.loader = new THREE.GLTFLoader();
+    this.loadModel(this.modelConfig.path);
+
+    this.startAutoSwitch();
+  }
+
+  loadModel(path) {
+    this.loader.load(path, (gltf) => {
       this.model = gltf.scene;
-      const [sx, sy, sz] = config.scale;
-      const [rx, ry, rz] = config.rotation;
+      const [sx, sy, sz] = this.modelConfig.scale;
+      const [rx, ry, rz] = this.modelConfig.rotation;
       this.model.scale.set(sx, sy, sz);
       this.model.rotation.set(rx, ry, rz);
     });
+  }
+
+  nextModel() {
+    this.currentModelIndex = (this.currentModelIndex + 1) % this.modelNames.length;
+    const nextModelName = this.modelNames[this.currentModelIndex];
+    this.modelConfig = modelConfigs[nextModelName];
+    this.loadModel(this.modelConfig.path);
+  }
+
+  startAutoSwitch() {
+    const input = document.getElementById('filterDuration');
+    const getDelay = () => Math.max(parseInt(input.value, 10) * 1000, 60000);
+
+    const updateInterval = () => {
+      if (this.switchInterval) clearInterval(this.switchInterval);
+      this.switchInterval = setInterval(() => {
+        this.nextModel();
+      }, getDelay());
+    };
+
+    input.addEventListener('input', updateInterval);
+    updateInterval();
   }
 
   render(results) {
@@ -136,7 +159,7 @@ class EffectRenderer {
   }
 }
 
-const effectRenderer = new EffectRenderer('glasses');
+const effectRenderer = new EffectRenderer(Object.keys(modelConfigs)[0]);
 
 function onResults(results) {
   effectRenderer.render(results);
