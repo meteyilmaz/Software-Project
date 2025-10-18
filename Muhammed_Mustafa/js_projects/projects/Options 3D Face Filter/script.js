@@ -5,7 +5,11 @@ const canvasElement = document.getElementsByClassName('output_canvas')[0];
 const canvas2d = document.getElementsByClassName('canvas2d')[0];
 const ctx = canvas2d.getContext('2d');
 
-const filterButton = document.getElementById("filterButton");
+const prevFilterButton = document.getElementById("prevFilter");
+const nextFilterButton = document.getElementById("nextFilter");
+const filterNameText = document.getElementById("filterName");
+
+let interactableButtons = [prevFilterButton, nextFilterButton];
 
 let canClick = true;
 
@@ -25,6 +29,15 @@ const solutionOptions = {
 const modelConfigs = {
   helmetModel: {
     path: './models/helmetModel.glb',
+    name: "Black Helmet",
+    scale: [30, 30, 30],
+    rotation: [0, 0, 0],
+    position: [0, 0, -5],
+  },
+
+  helmetModel2: {
+    path: './models/motorcycle_helmet/source/4khelmet/4khelmet.gltf',
+    name: "Red Helmet",
     scale: [30, 30, 30],
     rotation: [0, 0, 0],
     position: [0, 0, -5],
@@ -60,6 +73,8 @@ class EffectRenderer {
     this.scene.add(dirLight);
     this.loader = new THREE.GLTFLoader();
     this.loadModel(this.modelConfig.path);
+
+    filterNameText.textContent = this.modelConfig.name;
   }
 
   loadModel(path) {
@@ -77,6 +92,17 @@ class EffectRenderer {
     const nextModelName = this.modelNames[this.currentModelIndex];
     this.modelConfig = modelConfigs[nextModelName];
     this.loadModel(this.modelConfig.path);
+
+    filterNameText.textContent = this.modelConfig.name;
+  }
+
+  prevModel() {
+    this.currentModelIndex = (this.currentModelIndex - 1 + this.modelNames.length) % this.modelNames.length;
+    const nextModelName = this.modelNames[this.currentModelIndex];
+    this.modelConfig = modelConfigs[nextModelName];
+    this.loadModel(this.modelConfig.path);
+
+    filterNameText.textContent = this.modelConfig.name;
   }
 
   render(results) {
@@ -209,25 +235,26 @@ async function main() {
       const fingerX = canvasRect.left + (1 - indexFingerTip.x) * canvasRect.width;
       const fingerY = canvasRect.top + indexFingerTip.y * canvasRect.height;
 
-      const object = filterButton;
-      const objectRect = object.getBoundingClientRect();
+      for (let i = 0; i < interactableButtons.length; i++) {
+          const object = interactableButtons[i];
+          const objectRect = object.getBoundingClientRect();
 
-      if (
-          fingerX >= objectRect.left &&
-          fingerX <= objectRect.right &&
-          fingerY >= objectRect.top &&
-          fingerY <= objectRect.bottom
-      ) {
-          if (canClick) {
-              canClick = false;
-              filterButton.style.backgroundColor = "#0056b3";
-              filterButton.click();
-              setTimeout(() => {
-                  canClick = true;
-              }, 2000);
+          if (
+              fingerX >= objectRect.left &&
+              fingerX <= objectRect.right &&
+              fingerY >= objectRect.top &&
+              fingerY <= objectRect.bottom
+          ) {
+              if (canClick) {
+                  canClick = false;
+                  object.click();
+                  setTimeout(() => {
+                      canClick = true;
+                  }, 2000);
+              }
+          } else {
+
           }
-      } else {
-        filterButton.style.backgroundColor = "#007BFF";
       }
 
     });
@@ -239,6 +266,10 @@ async function main() {
 
 main();
 
-filterButton.addEventListener('click', () => {
+nextFilterButton.addEventListener('click', () => {
   effectRenderer.nextModel();
+});
+
+prevFilterButton.addEventListener('click', () => {
+  effectRenderer.prevModel();
 });

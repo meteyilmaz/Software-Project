@@ -4,10 +4,9 @@ body, html {
   overflow: hidden;
   width: 100%;
   height: 100%;
-
-  background: linear-gradient(270deg, #ff7eb3, #ff758c, #ffce73, #8fd3f4, #84fab0);
-  background-size: 600% 600%;
-  animation: bgFlow 30s ease infinite;
+  background: radial-gradient(circle at 20% 20%, #ff7eb3, #84fab0, #8fd3f4, #ffce73);
+  background-size: 300% 300%;
+  animation: bgFlow 40s ease infinite;
 }
 
 .container {
@@ -26,7 +25,7 @@ body, html {
   height: 720px;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 60px rgba(0, 123, 255, 0.4);
 }
 
 .output_canvas,
@@ -41,50 +40,77 @@ body, html {
 
 .canvas2d {
   pointer-events: none;
-  -moz-transform: scaleX(-1);
-  -o-transform: scaleX(-1);
-  -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
-  filter: FlipH;
-  -ms-filter: "FlipH";
 }
 
 .input_video {
   display: none;
 }
 
-#filterButton {
+#prevFilter {
   position: absolute;
-  top: 5px;
-  right: 5px;
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #007BFF;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 70px;
+  height: 70px;
+  background: rgba(0, 123, 255, 0.8);
+  border-radius: 50%;
   color: white;
-  border: none;
-  border-radius: 8px;
+  font-size: 36px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  transition: background-color 0.3s;
-  transform: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  transition: all 0.2s ease;
 }
 
-.info-box {
+#prevFilter:hover {
+  transform: translateY(-50%) scale(1.2);
+  box-shadow: 0 0 30px #00f0ff, 0 0 50px #00aaff;
+}
+
+#nextFilter {
   position: absolute;
-  top: 30px;
-  left: 10px;
-  max-width: 90px;
-  padding: 8px 10px;
-  background-color: rgba(255, 255, 255, 0.85);
-  color: #000;
-  font-size: 13px;
-  font-weight: 500;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  line-height: 1.3;
-  word-wrap: break-word;
-  text-align: left;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 70px;
+  height: 70px;
+  background: rgba(0, 123, 255, 0.8);
+  border-radius: 50%;
+  color: white;
+  font-size: 36px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  transition: all 0.2s ease;
+}
+
+#nextFilter:hover {
+  transform: translateY(-50%) scale(1.2);
+  box-shadow: 0 0 30px #00f0ff, 0 0 50px #00aaff;
+}
+
+#filterName {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(6px);
+  text-align: center;
+  min-width: 120px;
 }
 
 @keyframes bgFlow {
