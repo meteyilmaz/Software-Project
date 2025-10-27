@@ -11,8 +11,6 @@ const filterNameText = document.getElementById("filterName");
 
 let interactableButtons = [prevFilterButton, nextFilterButton];
 
-let canClick = true;
-
 const config = {
   locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/${file}`,
 };
@@ -34,7 +32,6 @@ const modelConfigs = {
     rotation: [0, 0, 0],
     position: [0, 0, -5],
   },
-
   helmetModel2: {
     path: './models/motorcycle_helmet/source/4khelmet/4khelmet.gltf',
     name: "Red Helmet",
@@ -43,6 +40,58 @@ const modelConfigs = {
     position: [0, 0, -5],
   },
 };
+
+function BGAnim(){
+  const smokeCanvas = document.getElementById("smoke");
+  const smokeCtx = smokeCanvas.getContext("2d");
+
+  smokeCanvas.width = window.innerWidth;
+  smokeCanvas.height = window.innerHeight;
+
+  const particles = [];
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * smokeCanvas.width;
+      this.y = smokeCanvas.height + 50;
+      this.size = Math.random() * 40 + 20;
+      this.speedY = Math.random() * 1 + 0.5;
+      this.alpha = Math.random() * 0.2 + 0.05;
+    }
+    update() {
+      this.y -= this.speedY;
+      if (this.y < -50) {
+        this.y = smokeCanvas.height + 50;
+        this.x = Math.random() * smokeCanvas.width;
+      }
+    }
+    draw() {
+      smokeCtx.beginPath();
+      smokeCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      const gradient = smokeCtx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+      gradient.addColorStop(0, `rgba(255,255,255,${this.alpha})`);
+      gradient.addColorStop(1, "transparent");
+      smokeCtx.fillStyle = gradient;
+      smokeCtx.fill();
+    }
+  }
+
+  for (let i = 0; i < 40; i++) particles.push(new Particle());
+    function animate() {
+      smokeCtx.clearRect(0, 0, smokeCanvas.width, smokeCanvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animate);
+  }
+
+  animate();
+
+  window.addEventListener("resize", () => {
+    smokeCanvas.width = window.innerWidth;
+    smokeCanvas.height = window.innerHeight;
+  });
+}
+
+BGAnim();
 
 class EffectRenderer {
   VIDEO_DEPTH = 500;
@@ -73,7 +122,6 @@ class EffectRenderer {
     this.scene.add(dirLight);
     this.loader = new THREE.GLTFLoader();
     this.loadModel(this.modelConfig.path);
-
     filterNameText.textContent = this.modelConfig.name;
   }
 
@@ -92,7 +140,6 @@ class EffectRenderer {
     const nextModelName = this.modelNames[this.currentModelIndex];
     this.modelConfig = modelConfigs[nextModelName];
     this.loadModel(this.modelConfig.path);
-
     filterNameText.textContent = this.modelConfig.name;
   }
 
@@ -101,7 +148,6 @@ class EffectRenderer {
     const nextModelName = this.modelNames[this.currentModelIndex];
     this.modelConfig = modelConfigs[nextModelName];
     this.loadModel(this.modelConfig.path);
-
     filterNameText.textContent = this.modelConfig.name;
   }
 
@@ -173,9 +219,7 @@ faceMesh.onResults(onResults);
 
 const camera = new Camera(videoElement, {
   onFrame: async () => {
-    if (videoElement.readyState >= 2) {
-      await faceMesh.send({ image: videoElement });
-    }
+    if (videoElement.readyState >= 2) await faceMesh.send({ image: videoElement });
   },
   width: 1280,
   height: 720,
@@ -200,76 +244,75 @@ async function loadHandLandmarker() {
 async function main() {
   const handLandmarker = await loadHandLandmarker();
   const drawingUtils = new DrawingUtils(ctx);
+  const holdTime = 2000;
+
+  interactableButtons.forEach(button => {
+    const fill = button.querySelector('.fill');
+    let startTime = null;
+    let rafId = null;
+
+    function animateFill(timestamp) {
+      if (!startTime) startTime = timestamp;
+
+      const elapsed = timestamp - startTime;
+      const percent = Math.min((elapsed / holdTime) * 100, 100);
+
+      fill.style.width = percent + '%';
+      
+      if (percent < 100) rafId = requestAnimationFrame(animateFill);
+      else {
+        button.click();
+        fill.style.width = '0%';
+        startTime = null;
+        rafId = null;
+      }
+    }
+
+    button.startFill = () => { if (!rafId) rafId = requestAnimationFrame(animateFill); };
+    button.stopFill = () => { cancelAnimationFrame(rafId); rafId=null; startTime=null; fill.style.width='0%'; };
+  });
 
   async function detectHands() {
     canvas2d.width = videoElement.videoWidth;
     canvas2d.height = videoElement.videoHeight;
     ctx.clearRect(0, 0, canvas2d.width, canvas2d.height);
-    if (videoElement.readyState < 2) {
-      requestAnimationFrame(detectHands);
-      return;
-    }
+
+    if (videoElement.readyState < 2) { requestAnimationFrame(detectHands); return; }
+
     const results = await handLandmarker.detectForVideo(videoElement, performance.now());
-    if (!results.landmarks || results.landmarks.length === 0) {
-      requestAnimationFrame(detectHands);
-      return;
-    }
+
+    if (!results.landmarks || results.landmarks.length === 0) { requestAnimationFrame(detectHands); return; }
+
     results.landmarks.forEach((landmarks) => {
       const indexFingerTip = landmarks[8];
+
       ctx.beginPath();
       ctx.arc(indexFingerTip.x * canvas2d.width, indexFingerTip.y * canvas2d.height, 10, 0, 2 * Math.PI);
       ctx.fillStyle = "red";
       ctx.fill();
-      [4, 12, 16, 20].forEach(i => {
-        ctx.beginPath();
-        ctx.arc(landmarks[i].x * canvas2d.width, landmarks[i].y * canvas2d.height, 10, 0, 2 * Math.PI);
-        ctx.fillStyle = "green";
-        ctx.fill();
-      });
-      drawingUtils.drawConnectors(landmarks, HandLandmarker.HAND_CONNECTIONS, {
-        color: "#00FF00",
-        lineWidth: 5,
-      });
+
+      [4,12,16,20].forEach(i => { ctx.beginPath(); ctx.arc(landmarks[i].x*canvas2d.width, landmarks[i].y*canvas2d.height, 10, 0, 2*Math.PI); ctx.fillStyle="green"; ctx.fill(); });
+
+      drawingUtils.drawConnectors(landmarks, HandLandmarker.HAND_CONNECTIONS, { color:"#00FF00", lineWidth:5 });
 
       const canvasRect = canvas2d.getBoundingClientRect();
       const fingerX = canvasRect.left + (1 - indexFingerTip.x) * canvasRect.width;
       const fingerY = canvasRect.top + indexFingerTip.y * canvasRect.height;
 
-      for (let i = 0; i < interactableButtons.length; i++) {
-          const object = interactableButtons[i];
-          const objectRect = object.getBoundingClientRect();
+      for (let i = 0;i < interactableButtons.length; i++){
+        const object = interactableButtons[i];
+        const objectRect = object.getBoundingClientRect();
 
-          if (
-              fingerX >= objectRect.left &&
-              fingerX <= objectRect.right &&
-              fingerY >= objectRect.top &&
-              fingerY <= objectRect.bottom
-          ) {
-              if (canClick) {
-                  canClick = false;
-                  object.click();
-                  setTimeout(() => {
-                      canClick = true;
-                  }, 2000);
-              }
-          } else {
-
-          }
+        if (fingerX>=objectRect.left && fingerX<=objectRect.right && fingerY>=objectRect.top && fingerY<=objectRect.bottom) object.startFill();
+        else object.stopFill();
       }
-
     });
     requestAnimationFrame(detectHands);
   }
-
   detectHands();
 }
 
 main();
 
-nextFilterButton.addEventListener('click', () => {
-  effectRenderer.nextModel();
-});
-
-prevFilterButton.addEventListener('click', () => {
-  effectRenderer.prevModel();
-});
+nextFilterButton.addEventListener('click', () => { effectRenderer.nextModel(); });
+prevFilterButton.addEventListener('click', () => { effectRenderer.prevModel(); });

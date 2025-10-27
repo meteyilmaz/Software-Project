@@ -1,22 +1,68 @@
-body, html {
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+
+html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 20% 20%, #ff7eb3, #84fab0, #8fd3f4, #ffce73);
-  background-size: 300% 300%;
-  animation: bgFlow 40s ease infinite;
+  background: #000;
 }
 
-.container {
+#bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+#smoke {
   position: absolute;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  opacity: 0.6;
+}
+
+.neon-lines::before,
+.neon-lines::after {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: repeating-linear-gradient(120deg, rgba(255,0,0,0.2) 0 4px, transparent 4px 80px);
+  animation: moveLines 6s linear infinite;
+}
+
+.neon-lines::after {
+  background: repeating-linear-gradient(300deg, rgba(0,255,255,0.15) 0 4px, transparent 4px 80px);
+  animation-duration: 10s;
+}
+
+@keyframes moveLines {
+  from { transform: translateY(0); }
+  to { transform: translateY(100px); }
+}
+
+.main-wrapper {
+  display: flex;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.camera-frame {
+  width: 1280px;
+  height: 720px;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
 }
 
 .canvas-wrapper {
@@ -25,7 +71,9 @@ body, html {
   height: 720px;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 60px rgba(0, 123, 255, 0.4);
+  box-shadow: 0 0 50px rgba(255, 0, 0, 0.5), 0 0 100px rgba(255, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
 }
 
 .output_canvas,
@@ -47,74 +95,94 @@ body, html {
   display: none;
 }
 
-#prevFilter {
+.filter-control {
   position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 70px;
-  height: 70px;
-  background: rgba(0, 123, 255, 0.8);
+  width: 100%;
+  height: 100%;
+}
+
+.filter-btn {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle at center, #111, #000);
+  border: 3px solid #ff0000;
   border-radius: 50%;
-  color: white;
-  font-size: 36px;
-  font-weight: bold;
+  color: #ff0000;
+  font-size: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-  transition: all 0.2s ease;
+  box-shadow: 0 0 20px rgba(255,0,0,0.6);
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-#prevFilter:hover {
-  transform: translateY(-50%) scale(1.2);
-  box-shadow: 0 0 30px #00f0ff, 0 0 50px #00aaff;
+#prevFilter {
+  position: absolute;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 #nextFilter {
   position: absolute;
-  right: 20px;
+  right: 40px;
   top: 50%;
   transform: translateY(-50%);
-  width: 70px;
-  height: 70px;
-  background: rgba(0, 123, 255, 0.8);
-  border-radius: 50%;
-  color: white;
-  font-size: 36px;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-  transition: all 0.2s ease;
 }
 
-#nextFilter:hover {
-  transform: translateY(-50%) scale(1.2);
-  box-shadow: 0 0 30px #00f0ff, 0 0 50px #00aaff;
-}
-
-#filterName {
+.filter-btn .fill {
   position: absolute;
-  bottom: 0px;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background: rgba(255,0,0,0.5);
+  z-index: 1;
+  pointer-events: none;
+  transition: width 0.1s linear;
+}
+
+.filter-name {
+  position: absolute;
+  bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 22px;
-  font-weight: 700;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 20px;
   color: #fff;
-  padding: 12px 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 8px 20px;
+  border: 2px solid rgba(255, 0, 0, 0.7);
   border-radius: 12px;
-  background: rgba(0,0,0,0.4);
-  backdrop-filter: blur(6px);
-  text-align: center;
-  min-width: 120px;
+  background: rgba(0, 0, 0, 0.6);
+  text-shadow: 0 0 15px #ff0000;
+  box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.8s ease;
 }
 
-@keyframes bgFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.logo-header {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 28px;
+  color: #fff;
+  padding: 6px 20px;
+  border: 2px solid #ff0000;
+  border-radius: 15px;
+  background: rgba(0,0,0,0.6);
+  text-shadow: 0 0 12px #ff0000;
+  box-shadow: 0 0 20px rgba(255,0,0,0.5);
+  z-index: 5;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-50%) scale(0.9); }
+  to { opacity: 1; transform: translateX(-50%) scale(1); }
 }

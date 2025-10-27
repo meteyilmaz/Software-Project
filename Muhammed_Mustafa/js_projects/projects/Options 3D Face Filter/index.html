@@ -10,19 +10,26 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.129.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
-  <div class="container">
-    <video class="input_video" autoplay muted playsinline></video>
-    <div class="canvas-wrapper">
-      <canvas class="output_canvas" width="1280" height="720"></canvas>
-      <canvas class="canvas2d" width="1280" height="720"></canvas>
+  <div id="bg">
+    <canvas id="smoke"></canvas>
+    <div class="neon-lines"></div>
+  </div>
 
-      <div class="filter-control">
-        <div class="filter-btn" id="prevFilter">&#9664;</div>
-        <div class="filter-name" id="filterName">Filtre 1</div>
-        <div class="filter-btn" id="nextFilter">&#9654;</div>
+  <div class="logo-header">TAŞ MOTOR</div>
+
+  <div class="main-wrapper">
+    <div class="camera-frame">
+      <video class="input_video" autoplay muted playsinline></video>
+      <div class="canvas-wrapper">
+        <canvas class="output_canvas" width="1280" height="720"></canvas>
+        <canvas class="canvas2d" width="1280" height="720"></canvas>
+        <div class="filter-control">
+          <div class="filter-btn" id="prevFilter">&#9664;<div class="fill"></div></div>
+          <div class="filter-name" id="filterName"></div>
+          <div class="filter-btn" id="nextFilter">&#9654;<div class="fill"></div></div>
+        </div>
       </div>
     </div>
-    
   </div>
   <script type="module" src="script.js"></script>
 </body>
