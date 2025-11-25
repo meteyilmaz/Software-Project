@@ -25,19 +25,28 @@ const solutionOptions = {
 };
 
 const modelConfigs = {
-  helmetModel: {
-    path: './models/helmetModel.glb',
-    name: "Black Helmet",
+  ls2Rapid2WhiteHelmet: {
+    path: './models/ls2rapid2whitehelmet.glb',
+    name: "Ls2 Rapid2 Beyaz Kask",
     scale: [30, 30, 30],
     rotation: [0, 0, 0],
-    position: [0, 0, -5],
+    position: [0, 5, -5],
   },
-  helmetModel2: {
-    path: './models/motorcycle_helmet/source/4khelmet/4khelmet.gltf',
-    name: "Red Helmet",
+
+  ls2Rapid2MatTitaniumHelmet: {
+    path: './models/ls2rapid2mattitaniumhelmet.glb',
+    name: "Ls2 Rapid2 Mat Titanium Kask",
     scale: [30, 30, 30],
     rotation: [0, 0, 0],
-    position: [0, 0, -5],
+    position: [0, 5, -5],
+  },
+
+  ls2Rapid2OpticalHelmet: {
+    path: './models/ls2rapid2opticalhelmet.glb',
+    name: "Ls2 Rapid2 Optik Kask",
+    scale: [30, 30, 30],
+    rotation: [0, 0, 0],
+    position: [0, 5, -5],
   },
 };
 
