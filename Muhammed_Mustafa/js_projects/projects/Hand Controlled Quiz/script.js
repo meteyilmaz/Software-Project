@@ -87,6 +87,7 @@ const avatars = [
     },
 ];
 
+// Arka plan animasyonu
 function bgAnim() {
     const bgContainer = document.createElement("div");
     bgContainer.style.position = "fixed";
@@ -144,6 +145,84 @@ function bgAnim() {
 
 bgAnim();  
 
+// Soru kurulum ve cevap kontrolü
+function setupQuestion() {
+    let question = questions[questionNumber];
+
+    questionText.textContent = question.question;
+
+    let randomIndex1 = Math.floor(Math.random() * 2);
+    let randomIndex2 = (randomIndex1 === 0) ? 1 : 0;
+    
+    reply1.textContent = question.options[randomIndex1];
+    reply2.textContent = question.options[randomIndex2];
+    reply1.style.backgroundColor = "";
+    reply2.style.backgroundColor = "";
+    resultText.textContent = "";
+
+    resultText.style.backgroundColor = "#2c2c3e";
+
+    reply1.onclick = function () { checkAnswer(reply1.textContent, question.answer) };
+    reply2.onclick = function () { checkAnswer(reply2.textContent, question.answer) };
+
+    setTimeout(() => {
+        isReadyHand = true;
+    }, 1000);
+
+    hasAnswered = false;
+}
+
+// Cevap kontrolü
+function checkAnswer(reply, correctAnswer) {
+    if (hasAnswered) return;
+    hasAnswered = true;
+
+    document.body.classList.remove("correct", "wrong");
+
+    if (reply == correctAnswer) {
+        resultText.textContent = "Doğru Cevap";
+        document.body.classList.add("correct");
+        resultText.style.backgroundColor = buttonColors.greenColor;
+        resultText.style.color = "#fff";
+        correctSound.play();
+        isReadyHand = false;
+
+        const index = Math.floor(Math.random() * avatars.length);
+        const messageIndex = Math.floor(Math.random() * avatars[index].messages.length);
+
+        avatarBox.style.visibility = "visible";
+        avatarImage.src = avatars[index].image;
+        avatarName.textContent = avatars[index].name;
+        avatarMessage.textContent = avatars[index].messages[messageIndex];
+    } else {
+        resultText.textContent = "Yanlış Cevap";
+        document.body.classList.add("wrong");
+        resultText.style.backgroundColor = buttonColors.redColor;
+        resultText.style.color = "#fff";
+        wrongSound.play();
+        isReadyHand = false;
+
+        avatarBox.style.visibility = "hidden";
+    }
+
+    setTimeout(() => {
+        document.body.classList.remove("correct", "wrong");
+    }, 3000);
+
+    questionNumber += 1;
+    clearTimeout(handTimeOut);
+
+    if (questionNumber < questions.length) {
+        setTimeout(setupQuestion, 3000);
+    } else {
+        questionNumber = 0;
+        setupQuestion();
+    }
+}
+
+setupQuestion();
+
+// Kamera ve el izleme kurulumu
 async function setupCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -167,6 +246,7 @@ async function setupCamera() {
     }
 }
 
+// El izleme modeli yükleme
 async function loadHandLandmarker() {
     const vision = await FilesetResolver.forVisionTasks(
         "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
@@ -182,6 +262,7 @@ async function loadHandLandmarker() {
     });
 }
 
+// Ana işlev
 async function main() {
     await setupCamera();
     const handLandmarker = await loadHandLandmarker();
@@ -295,78 +376,3 @@ async function main() {
 }
 
 main();
-
-function setupQuestion() {
-    let question = questions[questionNumber];
-
-    questionText.textContent = question.question;
-
-    let randomIndex1 = Math.floor(Math.random() * 2);
-    let randomIndex2 = (randomIndex1 === 0) ? 1 : 0;
-    
-    reply1.textContent = question.options[randomIndex1];
-    reply2.textContent = question.options[randomIndex2];
-    reply1.style.backgroundColor = "";
-    reply2.style.backgroundColor = "";
-    resultText.textContent = "";
-
-    resultText.style.backgroundColor = "#2c2c3e";
-
-    reply1.onclick = function () { checkAnswer(reply1.textContent, question.answer) };
-    reply2.onclick = function () { checkAnswer(reply2.textContent, question.answer) };
-
-    setTimeout(() => {
-        isReadyHand = true;
-    }, 1000);
-
-    hasAnswered = false;
-}
-
-function checkAnswer(reply, correctAnswer) {
-    if (hasAnswered) return;
-    hasAnswered = true;
-
-    document.body.classList.remove("correct", "wrong");
-
-    if (reply == correctAnswer) {
-        resultText.textContent = "Doğru Cevap";
-        document.body.classList.add("correct");
-        resultText.style.backgroundColor = buttonColors.greenColor;
-        resultText.style.color = "#fff";
-        correctSound.play();
-        isReadyHand = false;
-
-        const index = Math.floor(Math.random() * avatars.length);
-        const messageIndex = Math.floor(Math.random() * avatars[index].messages.length);
-
-        avatarBox.style.visibility = "visible";
-        avatarImage.src = avatars[index].image;
-        avatarName.textContent = avatars[index].name;
-        avatarMessage.textContent = avatars[index].messages[messageIndex];
-    } else {
-        resultText.textContent = "Yanlış Cevap";
-        document.body.classList.add("wrong");
-        resultText.style.backgroundColor = buttonColors.redColor;
-        resultText.style.color = "#fff";
-        wrongSound.play();
-        isReadyHand = false;
-
-        avatarBox.style.visibility = "hidden";
-    }
-
-    setTimeout(() => {
-        document.body.classList.remove("correct", "wrong");
-    }, 3000);
-
-    questionNumber += 1;
-    clearTimeout(handTimeOut);
-
-    if (questionNumber < questions.length) {
-        setTimeout(setupQuestion, 3000);
-    } else {
-        questionNumber = 0;
-        setupQuestion();
-    }
-}
-
-setupQuestion();
