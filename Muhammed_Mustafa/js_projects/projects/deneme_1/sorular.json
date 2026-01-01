@@ -1,0 +1,22 @@
+[
+    { "soru": "Hangi şeklin 3 kenarı vardır?", "secenekler": ["Üçgen", "Kare"], "dogru": 0 },
+    { "soru": "Aşağıdakilerden hangisi çift sayıdır?", "secenekler": ["7", "8"], "dogru": 1 },
+    { "soru": "54 sayısında onlar basamağı kaçtır?", "secenekler": ["5", "4"], "dogru": 0 },
+    { "soru": "Bir saat kaç dakikadır?", "secenekler": ["60", "100"], "dogru": 0 },
+    { "soru": "Aşağıdaki hayvanlardan hangisi daha ağırdır?", "secenekler": ["Kedi", "Fil"], "dogru": 1 },
+    { "soru": "9 ile 9 arasındaki fark kaçtır?", "secenekler": ["0", "1"], "dogru": 0 },
+    { "soru": "Hangi şeklin köşesi yoktur?", "secenekler": ["Daire", "Kare"], "dogru": 0 },
+    { "soru": "Bir haftada kaç gün vardır?", "secenekler": ["5", "7"], "dogru": 1 },
+    { "soru": "Aşağıdaki sayılardan hangisi daha büyüktür?", "secenekler": ["34", "29"], "dogru": 0 },
+    { "soru": "20'nin yarısı kaçtır?", "secenekler": ["10", "5"], "dogru": 0 },
+    { "soru": "Bir metre kaç santimetredir?", "secenekler": ["100", "10"], "dogru": 0 },
+    { "soru": "Aşağıdaki saat kaçtır? (Küçük akrep 3'te büyük yelkovan 12'de)", "secenekler": ["3:00", "12:15"], "dogru": 0 },
+    { "soru": "Hangi sayı daha küçüktür?", "secenekler": ["14", "18"], "dogru": 0 },
+    { "soru": "Kısa kenarı uzun kenarından farklı olan şekil hangisi?", "secenekler": ["Dikdörtgen", "Kare"], "dogru": 0 },
+    { "soru": "Yer çekimi ne işe yarar?", "secenekler": ["Eşyaları yere çeker", "Eşyaları havaya fırlatır"], "dogru": 0 },
+    { "soru": "1 yıl kaç aydır?", "secenekler": ["12", "10"], "dogru": 0 },
+    { "soru": "Aşağıdaki sayılardan hangisi tek sayıdır?", "secenekler": ["14", "15"], "dogru": 1 },
+    { "soru": "Saat 8’den bir saat sonra saat kaç olur?", "secenekler": ["9", "7"], "dogru": 0 },
+    { "soru": "Bir deste kaç tanedir?", "secenekler": ["10", "12"], "dogru": 0 },
+    { "soru": "Hangi sayı 50’ye daha yakındır?", "secenekler": ["48", "39"], "dogru": 0 }
+]

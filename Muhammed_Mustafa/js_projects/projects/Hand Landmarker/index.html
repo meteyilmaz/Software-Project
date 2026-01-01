@@ -4,11 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hand Landmarker</title>
-    <script type="module" src="script.js"></script>
+    
+    <style>
+        canvas {
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+        }
+    </style>
+
 </head>
 <body>
     <h1>Hand Landmarker</h1>
     <video id="video" autoplay sinline width="640" height="480" style="display: none;"></video>
     <canvas id="canvas" width="640" height="480"></canvas>
+
+    <script type="module" src="script.js"></script>
 </body>
 </html>

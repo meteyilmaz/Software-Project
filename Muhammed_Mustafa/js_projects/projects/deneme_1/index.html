@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Landmarker</title>
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            background: url("images/bg1.jpg") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .question-box {
+            background: #FFE52A;
+            border: 4px solid #F79A19;
+            border-radius: 12px;
+            color: #333;
+        }
+
+        .choice-box {
+            background: #F79A19;
+            border: 3px solid #CF0F0F;
+            border-radius: 12px;
+            color: #fff;
+        }
+
+        .choice-box.correct {
+            background: #26CC66;
+            /* alternatif: doğru seçimi yeşil yapabiliriz */
+            color: #fff;
+        }
+
+        .choice-box.wrong {
+            background: #CF0F0F;
+            color: #fff;
+        }
+
+        .score-box {
+            background: #CF0F0F;
+            color: #fff;
+            border-radius: 8px;
+            padding: 6px 12px;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <video id="video" autoplay playsinline style="display:none;"></video>
+    <canvas id="canvas"></canvas>
+
+
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>
